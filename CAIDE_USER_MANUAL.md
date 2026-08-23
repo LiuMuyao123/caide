@@ -755,6 +755,7 @@ caide/
 ├── .github/workflows/ci.yml    # CI matrix
 ├── pyproject.toml
 ├── CITATION.cff
+├── CAIDE_USER_MANUAL.md        # this manual
 ├── LICENSE                     # MIT
 └── README.md
 ```

@@ -10,7 +10,7 @@ abstract: >-
   architectures, and propagates input uncertainty to a sensitivity ranking.
 type: software
 version: 17.1.0
-date-released: "2026-08-20"
+date-released: "2026-08-22"
 license: MIT
 repository-code: "https://github.com/LiuMuyao123/caide"
 url: "https://github.com/LiuMuyao123/caide"
