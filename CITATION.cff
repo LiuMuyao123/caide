@@ -12,8 +12,8 @@ type: software
 version: 17.1.0
 date-released: "2026-08-20"
 license: MIT
-repository-code: "https://github.com/caide-tools/caide"
-url: "https://github.com/caide-tools/caide"
+repository-code: "https://github.com/LiuMuyao123/caide"
+url: "https://github.com/LiuMuyao123/caide"
 keywords:
   - large language models
   - deployment planning
