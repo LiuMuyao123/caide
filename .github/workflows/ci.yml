@@ -29,6 +29,7 @@ jobs:
         run: |
           caide --version
           caide catalog
+          caide examples --extract .
           caide validate examples/university_tutoring.yaml
           caide run examples/university_tutoring.yaml --samples 50 --layers
           caide run examples/hospital_documentation.yaml --samples 50
