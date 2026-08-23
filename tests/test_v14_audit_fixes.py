@@ -137,7 +137,7 @@ def test_init_produces_a_scenario_that_validates(tmp_path):
 def readme():
     if not README.exists():
         pytest.skip("README not present in this layout")
-    return README.read_text()
+    return README.read_text(encoding="utf-8")
 
 
 def test_the_test_badge_matches_the_suite(readme):
@@ -160,7 +160,7 @@ def test_the_readme_states_the_current_speculative_multiplier(readme):
     verification arithmetic was priced. The corrected figure crosses
     parity, which reverses the recommendation the sentence carries."""
     import json
-    findings = json.loads((ROOT / "paper_figures" / "findings.json").read_text())
+    findings = json.loads((ROOT / "paper_figures" / "findings.json").read_text(encoding="utf-8"))
     at_256 = findings["regime_dependence"]["speculative_decoding"]["max"]
     assert f"{at_256:.2f}×" in readme
     assert "0.81×" not in readme
@@ -168,7 +168,7 @@ def test_the_readme_states_the_current_speculative_multiplier(readme):
 
 def test_the_readme_states_the_current_break_even_shape(readme):
     import json
-    findings = json.loads((ROOT / "paper_figures" / "findings.json").read_text())
+    findings = json.loads((ROOT / "paper_figures" / "findings.json").read_text(encoding="utf-8"))
     assert f"{findings['break_even']['n_crossings']} crossings" in readme
     assert f"{findings['break_even']['n_tie_windows']} windows" in readme
     assert "54 crossings" not in readme
@@ -179,7 +179,7 @@ def test_the_readme_states_the_current_uncertainty_verdict(readme):
     utilisation as the dominant driver. The endpoint is cheaper in all of
     them and utilisation carries 0.1%."""
     import json
-    findings = json.loads((ROOT / "paper_figures" / "findings.json").read_text())
+    findings = json.loads((ROOT / "paper_figures" / "findings.json").read_text(encoding="utf-8"))
     share = findings["uncertainty"]["probability_api_cheaper"]
     assert f"cheaper in {share:.0%} of 4,000 draws" in readme
     assert "utilisation (54% of explained variance)" not in readme

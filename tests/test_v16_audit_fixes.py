@@ -117,7 +117,7 @@ def test_primary_is_none_when_nothing_crosses():
 def test_the_roofline_uses_the_declared_average_sequence():
     workload = WorkloadClass("q", 1.0, 1500, 400)
     assert workload.avg_sequence == pytest.approx(1500 + 400 / 2.0)
-    source = (SRC / "roofline.py").read_text()
+    source = (SRC / "roofline.py").read_text(encoding="utf-8")
     assert "workload.avg_sequence" in source
     assert "tokens_in + tokens_out / 2.0" not in source
     assert "workload.tokens_in + workload.tokens_out / 2.0" not in source
@@ -130,7 +130,7 @@ def test_the_roofline_uses_the_declared_average_sequence():
 def _public_methods():
     out = []
     for path in sorted(SRC.glob("*.py")) + sorted(SRC.glob("examples/*.py")):
-        tree = ast.parse(path.read_text())
+        tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 for stmt in node.body:
@@ -161,7 +161,7 @@ def test_no_unexplained_public_method_lacks_a_caller():
     dangling parameters. v15 found the same failure in a method, so it
     extends here. ``parallel_efficiency`` and ``any_feasible`` were on
     this list until v16.0 -- one deleted, one wired up."""
-    texts = {p: p.read_text().splitlines()
+    texts = {p: p.read_text(encoding="utf-8").splitlines()
              for p in sorted(SRC.glob("*.py")) + sorted(SRC.glob("examples/*.py"))}
     dangling = []
     for path, cls, name, lineno in _public_methods():
@@ -184,8 +184,8 @@ def test_any_feasible_reaches_both_writers(tmp_path):
     bundle = ReportBundle(scenario)
     bundle.tco = scenario.evaluate_all()
     assert not bundle.any_feasible
-    md = write_markdown(bundle, tmp_path / "r.md").read_text()
-    html = write_html(bundle, tmp_path / "r.html").read_text()
+    md = write_markdown(bundle, tmp_path / "r.md").read_text(encoding="utf-8")
+    html = write_html(bundle, tmp_path / "r.html").read_text(encoding="utf-8")
     assert "No architecture here meets" in md
     assert "No architecture here meets" in html
 
@@ -195,5 +195,5 @@ def test_a_scenario_with_an_admissible_option_says_nothing(tmp_path):
     bundle = ReportBundle(scenario)
     bundle.tco = scenario.evaluate_all()
     assert bundle.any_feasible
-    md = write_markdown(bundle, tmp_path / "r.md").read_text()
+    md = write_markdown(bundle, tmp_path / "r.md").read_text(encoding="utf-8")
     assert "No architecture here meets" not in md

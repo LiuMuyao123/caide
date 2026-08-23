@@ -238,7 +238,7 @@ def test_html_report_embeds_the_scenario():
     scenario = load_scenario(example_scenario())
     bundle = ReportBundle(scenario, seed=1)
     bundle.tco = scenario.evaluate_all()
-    html = write_html(bundle, Path(tempfile.mkdtemp()) / "r.html").read_text()
+    html = write_html(bundle, Path(tempfile.mkdtemp()) / "r.html").read_text(encoding="utf-8")
     assert "Reproducing this analysis" in html
     assert "annual_volume" in html
 

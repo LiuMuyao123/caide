@@ -43,7 +43,7 @@ def test_every_declared_floor_states_its_basis(name):
     """A floor that decides an answer and carries no reason is a number
     nobody can argue with, which is not the same as a number nobody
     disagrees with."""
-    text = (EXAMPLES / f"{name}.yaml").read_text()
+    text = (EXAMPLES / f"{name}.yaml").read_text(encoding="utf-8")
     lines = text.splitlines()
     for i, line in enumerate(lines):
         if "quality_floor:" in line and not line.strip().startswith("#"):
@@ -53,7 +53,7 @@ def test_every_declared_floor_states_its_basis(name):
 
 @pytest.mark.parametrize("name", SCENARIOS)
 def test_the_provenance_header_declares_the_scale(name):
-    text = (EXAMPLES / f"{name}.yaml").read_text()
+    text = (EXAMPLES / f"{name}.yaml").read_text(encoding="utf-8")
     assert "DECLARED THRESHOLDS" in text
     assert "not measurements" in text
 
@@ -93,7 +93,7 @@ def test_a_comfortable_verdict_is_not_flagged():
 
 def test_the_resolution_is_declared_not_inferred():
     assert 0.0 < QUALITY_INDEX_RESOLUTION < 0.2
-    source = (Path(caide.__file__).parent / "specs.py").read_text()
+    source = (Path(caide.__file__).parent / "specs.py").read_text(encoding="utf-8")
     assert "no procedure" in source and "0.856" in source
 
 
@@ -112,12 +112,12 @@ def test_the_flag_reaches_every_channel(channel, tmp_path):
              "--out", str(tmp_path)], capture_output=True, text=True)
         assert "cannot resolve" in proc.stdout
     elif channel == "markdown":
-        assert "below it" in write_markdown(bundle, tmp_path / "r.md").read_text()
+        assert "below it" in write_markdown(bundle, tmp_path / "r.md").read_text(encoding="utf-8")
     elif channel == "html":
         assert "index resolution" in write_html(bundle,
-                                                tmp_path / "r.html").read_text()
+                                                tmp_path / "r.html").read_text(encoding="utf-8")
     else:
-        text = write_csv(bundle, tmp_path / "r.csv").read_text()
+        text = write_csv(bundle, tmp_path / "r.csv").read_text(encoding="utf-8")
         assert "marginal_verdicts" in text
         assert "discharge_summary" in text
 

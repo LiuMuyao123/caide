@@ -42,7 +42,7 @@ def test_the_ledger_tracks_the_current_release(ledger):
     """The commit that bumps the version bumps the round. Without this the
     ledger ages backwards: every item looks fresher each release."""
     version = re.search(r'version = "(\d+)\.',
-                        (ROOT / "pyproject.toml").read_text()).group(1)
+                        (ROOT / "pyproject.toml").read_text(encoding="utf-8")).group(1)
     assert ledger.CURRENT_ROUND == int(version)
 
 

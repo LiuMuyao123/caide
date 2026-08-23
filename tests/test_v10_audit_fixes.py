@@ -52,7 +52,7 @@ SRC = pathlib.Path(caide.__file__).parent
 def _public_dataclass_fields():
     out = []
     for path in sorted(SRC.glob("*.py")) + sorted(SRC.glob("examples/*.py")):
-        tree = ast.parse(path.read_text())
+        tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if not isinstance(node, ast.ClassDef):
                 continue
@@ -80,7 +80,7 @@ def test_every_public_dataclass_field_is_read_somewhere():
     and never read is invisible to a test suite, because every test that
     could have caught it would have had to be written by someone who had
     already noticed."""
-    texts = {p: p.read_text().splitlines()
+    texts = {p: p.read_text(encoding="utf-8").splitlines()
              for p in sorted(SRC.glob("*.py")) + sorted(SRC.glob("examples/*.py"))}
     dangling = []
     for path, cls, name, lineno in _public_dataclass_fields():
@@ -107,7 +107,7 @@ def test_the_field_check_would_not_have_caught_the_worst_case():
     hits = sum(
         line.count("quality_floor")
         for p in SRC.glob("*.py")
-        for line in p.read_text().splitlines()
+        for line in p.read_text(encoding="utf-8").splitlines()
     )
     assert hits > 1
 
@@ -190,7 +190,7 @@ def test_the_violation_is_named_not_priced():
 
 def _tutoring_raw():
     import yaml
-    return yaml.safe_load((EXAMPLES / "university_tutoring.yaml").read_text())
+    return yaml.safe_load((EXAMPLES / "university_tutoring.yaml").read_text(encoding="utf-8"))
 
 
 @pytest.mark.parametrize("mutate", [

@@ -83,13 +83,13 @@ def test_sorting_the_csv_by_cost_no_longer_hides_the_constraint(artefacts):
 # ==========================================================================
 
 def test_the_markdown_report_lists_what_was_ruled_out(artefacts):
-    text = artefacts["md"].read_text()
+    text = artefacts["md"].read_text(encoding="utf-8")
     assert "not admissible" in text
     assert "onprem-8b-int4" in text and "discharge_summary" in text
 
 
 def test_the_html_dashboard_lists_what_was_ruled_out(artefacts):
-    text = artefacts["html"].read_text()
+    text = artefacts["html"].read_text(encoding="utf-8")
     assert "Not admissible" in text
     assert "onprem-8b-int4" in text
 
@@ -99,9 +99,9 @@ def test_the_written_artefacts_name_the_same_architecture(artefacts):
     Markdown report to all four."""
     best = artefacts["bundle"].cheapest()
     md = re.search(r"Cheapest architecture is \*\*([\w-]+)\*\*",
-                   artefacts["md"].read_text())
+                   artefacts["md"].read_text(encoding="utf-8"))
     html = re.search(r"<strong>([\w-]+)</strong> is cheapest",
-                     artefacts["html"].read_text())
+                     artefacts["html"].read_text(encoding="utf-8"))
     assert md and html
     assert md.group(1) == html.group(1) == best == "onprem-70b"
 
@@ -115,8 +115,8 @@ def test_unevaluated_constraints_reach_the_written_artefacts(tmp_path):
     scenario = load_scenario(EXAMPLES / "public_helpline.yaml")
     bundle = ReportBundle(scenario)
     bundle.tco = scenario.evaluate_all()
-    md = write_markdown(bundle, tmp_path / "r.md").read_text()
-    html = write_html(bundle, tmp_path / "r.html").read_text()
+    md = write_markdown(bundle, tmp_path / "r.md").read_text(encoding="utf-8")
+    html = write_html(bundle, tmp_path / "r.html").read_text(encoding="utf-8")
     assert "not evaluated" in md.lower()
     assert "not evaluated" in html.lower()
 
@@ -161,8 +161,8 @@ def test_the_reports_describe_windows_not_a_band(tmp_path):
     decide."""
     bundle, result = _staircase_bundle(tmp_path)
     assert len(result.tie_bands(0.05)) == 4
-    md = write_markdown(bundle, tmp_path / "b.md").read_text()
-    html = write_html(bundle, tmp_path / "b.html").read_text()
+    md = write_markdown(bundle, tmp_path / "b.md").read_text(encoding="utf-8")
+    html = write_html(bundle, tmp_path / "b.html").read_text(encoding="utf-8")
     assert "4 window" in md
     assert "indistinguishable band" not in md
     # the HTML dashboard renders the same result through the same helper
@@ -174,7 +174,7 @@ def test_the_reports_state_the_gap_between_the_windows(tmp_path):
     """A threshold summary has to report its distance to the threshold --
     the lesson of v9, v12 and v13, applied to the consumers this time."""
     bundle, _ = _staircase_bundle(tmp_path)
-    md = write_markdown(bundle, tmp_path / "b.md").read_text()
+    md = write_markdown(bundle, tmp_path / "b.md").read_text(encoding="utf-8")
     assert re.search(r"differ by up to 4\d%", md)
 
 

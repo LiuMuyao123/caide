@@ -52,7 +52,7 @@ def findings(tmp_path_factory):
     proc = subprocess.run([sys.executable, str(REPRODUCE), "--out", str(out)],
                           capture_output=True, text=True)
     assert proc.returncode == 0, proc.stderr[-2000:]
-    return json.loads((out / "findings.json").read_text())
+    return json.loads((out / "findings.json").read_text(encoding="utf-8"))
 
 
 def test_the_script_produces_every_published_result(findings):
@@ -235,7 +235,7 @@ def test_every_result_function_is_registered():
     """A result that exists and is not called is the same failure as a
     figure carried by hand: present in the source, absent from the
     output."""
-    source = REPRODUCE.read_text()
+    source = REPRODUCE.read_text(encoding="utf-8")
     defined = {line.split("(")[0].removeprefix("def result_")
                for line in source.splitlines() if line.startswith("def result_")}
     for name in defined:

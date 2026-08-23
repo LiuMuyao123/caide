@@ -298,7 +298,7 @@ def test_cli_validate_rejects_bad_scenario(tmp_path, capsys):
     path = tmp_path / "bad.yaml"
     doc = example_scenario()
     doc["workloads"][0]["share"] = 0.3
-    path.write_text(yaml.safe_dump(doc))
+    path.write_text(yaml.safe_dump(doc), encoding="utf-8")
     assert main(["validate", str(path)]) == 2
 
 
@@ -332,6 +332,6 @@ def test_cli_run_writes_a_full_report(tmp_path, capsys):
                  "--out", str(out), "--samples", "60", "--layers"]) == 0
     for name in ("report.md", "report.html", "results.csv"):
         assert (out / name).exists(), name
-    html = (out / "report.html").read_text()
+    html = (out / "report.html").read_text(encoding="utf-8")
     assert "data:image/png;base64," in html      # figures must be embedded
     assert "<img" in html
