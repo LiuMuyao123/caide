@@ -9,6 +9,12 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    env:
+      # Force UTF-8 file I/O on every OS. Without this, Windows defaults to
+      # cp1252 and the tests that read UTF-8 reports and source files
+      # (em-dashes, ×, →, ε) fail with UnicodeDecodeError, while Linux and
+      # macOS pass because their default is already UTF-8.
+      PYTHONUTF8: "1"
     strategy:
       fail-fast: false
       matrix:
