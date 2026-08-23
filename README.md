@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-487%20passing-brightgreen.svg)](tests/)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen.svg)](tests/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22066252.svg)](https://doi.org/10.5281/zenodo.22066252)
 
 > **🔗 Live demo — [open the interactive explorer](https://liumuyao123.github.io/caide/)**
 > (runs entirely in the browser, no install; every figure is real CAIDE output).
@@ -388,8 +389,11 @@ CAIDE models accelerators, it does not use them.
 
 ## Citation
 
-If CAIDE contributes to published work, please cite the software paper
-(see `CITATION.cff`).
+If you use CAIDE, please cite the archived release:
+
+> Liu, M. (2026). *CAIDE: Cost-Aware Inference Deployment Evaluator* (v17.1.0). Zenodo. https://doi.org/10.5281/zenodo.22066252
+
+DOI: [10.5281/zenodo.22066252](https://doi.org/10.5281/zenodo.22066252). Machine-readable metadata is in `CITATION.cff`.
 
 ## License
 

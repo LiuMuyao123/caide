@@ -658,7 +658,11 @@ Contact: Muyao.Liu25@student.xjtlu.edu.cn
 
 ### 10.4 Citation
 
-If you use CAIDE in published work, please cite the software; machine-readable metadata is in `CITATION.cff`.
+If you use CAIDE in published work, please cite the archived release:
+
+> Liu, M. (2026). *CAIDE: Cost-Aware Inference Deployment Evaluator* (v17.1.0). Zenodo. https://doi.org/10.5281/zenodo.22066252
+
+DOI: 10.5281/zenodo.22066252. Machine-readable metadata is in `CITATION.cff`.
 
 ### 10.5 Testing
 

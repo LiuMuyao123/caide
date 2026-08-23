@@ -12,6 +12,7 @@ type: software
 version: 17.1.0
 date-released: "2026-08-22"
 license: MIT
+doi: "10.5281/zenodo.22066252"
 repository-code: "https://github.com/LiuMuyao123/caide"
 url: "https://github.com/LiuMuyao123/caide"
 keywords:
