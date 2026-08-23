@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Test
+        run: pytest -q --cov=caide --cov-report=term-missing
+      - name: Smoke-test the CLI on every shipped example
+        run: |
+          caide --version
+          caide catalog
+          caide validate examples/university_tutoring.yaml
+          caide run examples/university_tutoring.yaml --samples 50 --layers
+          caide run examples/hospital_documentation.yaml --samples 50
+          caide run examples/public_helpline.yaml --samples 50
+          caide breakeven examples/university_tutoring.yaml -a api-frontier -b selfhost-70b
+          caide sweep examples/university_tutoring.yaml
+          caide route examples/public_helpline.yaml
