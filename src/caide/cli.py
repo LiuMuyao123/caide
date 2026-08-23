@@ -694,7 +694,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="caide",
         description="Cost-Aware Inference Deployment Evaluator",
-        epilog="Documentation: https://github.com/caide-tools/caide",
+        epilog="Documentation: https://github.com/LiuMuyao123/caide",
     )
     p.add_argument("--version", action="version",
                    version=f"caide {__version__}")
