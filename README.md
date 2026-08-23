@@ -5,6 +5,10 @@
 [![Tests](https://img.shields.io/badge/tests-487%20passing-brightgreen.svg)](tests/)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen.svg)](tests/)
 
+> **🔗 Live demo — [open the interactive explorer](https://liumuyao123.github.io/caide/)**
+> (runs entirely in the browser, no install; every figure is real CAIDE output).
+> No internet? Open `caide_explorer.html` from the repository directly in a browser.
+
 **Answer four questions before you deploy a large language model service:
 what will it cost, where does the money actually go, at what volume does
 the cheaper architecture change, and how much of the answer is guesswork.**
