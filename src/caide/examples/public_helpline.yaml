@@ -1,0 +1,179 @@
+# quality_floor provenance (recorded in v17.0, settling the carry-forward
+# ledger's oldest overdue item). Each floor below carries the capability
+# claim it encodes. The floors are DECLARED THRESHOLDS on a DECLARED
+# index, not measurements: no procedure here distinguishes 0.856 from
+# 0.860. Where a note says DECIDES THE ANSWER, the published verdict for
+# this scenario turns on a margin smaller than the index's stated
+# resolution of 0.05, and the tooling flags it as such.
+# National public-service helpline: high volume, bounded tasks, low review.
+#
+# The third domain inverts the balance again. Volume is two orders of
+# magnitude above the university case, tasks are narrow, and almost
+# nothing needs human review -- so inference genuinely does dominate the
+# total, and the architecture choice genuinely does matter. This is the
+# regime in which the conventional "self-host above N queries" advice is
+# correct, and CAIDE is used to find N rather than to dispute it.
+#
+# It is also the scenario that motivates routing: a quality floor of 0.40
+# on 71% of traffic means most requests do not need the capable model at
+# all. Run `caide route` on this file to see the ladder split.
+
+name: public-service-helpline
+description: >
+  Citizen-facing helpline for a national administration: entitlement
+  questions, form guidance, status lookup and multilingual triage.
+  Data-sovereignty rules require in-region serving; the comparison is
+  between one large model, one small model, and a routed ladder.
+
+grid: nordic-hydro                # sited for low carbon intensity and cheap power
+annual_volume: 420_000_000
+
+slo:
+  ttft_seconds: 1.2
+  tpot_seconds: 0.050
+  enforce: true
+
+workloads:
+  - name: faq_lookup
+    share: 0.501
+    tokens_in: 700                # short question plus retrieved policy snippet
+    tokens_out: 180
+    # floor basis: factual lookup against a maintained FAQ; set so that no candidate is excluded
+    quality_floor: 0.40
+    cacheable: true               # heavy repetition; caching pays here
+
+  - name: form_guidance
+    share: 0.27
+    tokens_in: 1100
+    tokens_out: 320
+    # floor basis: factual lookup against a maintained FAQ; set so that no candidate is excluded
+    quality_floor: 0.40
+    cacheable: true
+
+  - name: eligibility_explanation
+    share: 0.155
+    tokens_in: 2400               # multiple regulations retrieved
+    tokens_out: 600
+    # floor basis: eligibility explanations are relied on for benefit decisions; set at the mid-tier band
+    quality_floor: 0.78           # a wrong entitlement answer has legal weight
+    review_rate: 0.04
+    review_minutes: 5.0
+    cacheable: false
+
+  - name: complaint_triage
+    share: 0.073
+    tokens_in: 1600
+    tokens_out: 400
+    # floor basis: triage routes to a human; set low because errors are recoverable downstream
+    quality_floor: 0.62
+    review_rate: 0.03
+    review_minutes: 3.0
+    baseline_minutes: 6.0
+    cacheable: false
+
+  - name: appeal_drafting
+    share: 0.001
+    tokens_in: 4000
+    tokens_out: 1500
+    # floor basis: appeal drafting is adversarial and consequential; set at the frontier band. DECIDES THE ANSWER: no candidate clears it, the nearest by 0.5%
+    quality_floor: 0.86
+    self_consistency_k: 2
+    review_rate: 1.00             # a caseworker signs every drafted appeal
+    review_minutes: 8.0
+    baseline_minutes: 38.0        # drafting an appeal from scratch
+    cacheable: false
+    latency_sensitive: false
+
+architectures:
+  - name: selfhost-70b-only
+    type: self_hosted
+    model: dense-70b
+    hardware: h100-sxm
+    serving:
+      n_accelerators: 4
+      max_batch: 256
+      demand_duty_cycle:  0.62    # steady civic traffic, predictable diurnal
+      infra_overhead: 1.30
+    stack: maximal
+    platform_engineering_annual: 1_150_000
+
+  - name: selfhost-8b-only
+    type: self_hosted
+    model: dense-8b
+    hardware: l40s
+    serving:
+      n_accelerators: 1
+      max_batch: 256
+      demand_duty_cycle:  0.62
+      infra_overhead: 1.30
+    stack: maximal
+    platform_engineering_annual: 900_000
+
+  - name: selfhost-moe
+    type: self_hosted
+    model: moe-8x7b
+    hardware: h100-sxm
+    serving:
+      n_accelerators: 2
+      max_batch: 256
+      demand_duty_cycle:  0.62
+      infra_overhead: 1.30
+    stack: aggressive
+    platform_engineering_annual: 1_050_000
+
+  - name: api-economy
+    type: api
+    pricing: api-economy
+    platform_engineering_annual: 420_000
+
+layers:
+  retrieval:
+    fixed_annual: 260_000         # legislation corpus, multilingual embeddings
+    sublinear_coefficient: 90.0
+    sublinear_exponent: 0.30
+
+  integration:
+    fixed_annual: 1_400_000       # case management, identity, telephony, CRM
+
+  workforce:
+    front_load_year1: 980_000
+    decay: 0.38
+
+assurance:
+  audit_logging_annual: 380_000   # administrative-law traceability
+  evaluation_annual: 420_000      # fairness across languages and cohorts
+  red_team_annual: 190_000
+  privacy_review_annual: 240_000
+  incident_response_annual: 210_000
+  reviewer_hourly_cost: 61.0
+  storage_per_query: 0.0000015
+
+scaling:
+  annual_price_decline: 0.36
+  price_elasticity: 1.55          # displaced call-centre demand is elastic
+  autonomous_growth: 0.10
+  horizon_years: 5
+  fixed_annual_cost: 4_100_000
+
+uncertainty:
+  accelerator_hourly:
+    kind: lognormal
+    median: 3.20
+    sigma: 0.34
+  tokens_in_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.26
+  tokens_out_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.20
+  utilisation:
+    kind: triangular
+    low: 0.45
+    mode: 0.62
+    high: 0.80
+  volume_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.32                   # uptake of a new public channel is uncertain

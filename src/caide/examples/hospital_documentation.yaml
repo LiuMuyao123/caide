@@ -1,0 +1,175 @@
+# quality_floor provenance (recorded in v17.0, settling the carry-forward
+# ledger's oldest overdue item). Each floor below carries the capability
+# claim it encodes. The floors are DECLARED THRESHOLDS on a DECLARED
+# index, not measurements: no procedure here distinguishes 0.856 from
+# 0.860. Where a note says DECIDES THE ANSWER, the published verdict for
+# this scenario turns on a margin smaller than the index's stated
+# resolution of 0.05, and the tooling flags it as such.
+# Clinical documentation assistant for a regional hospital network.
+#
+# Same tool, different domain. The structure of the answer inverts:
+# in the university case inference was 10% of TCO and assurance was
+# large; here assurance is larger still, because every output touches a
+# medical record and clinician review is mandatory rather than gated by
+# confidence. Data residency also removes the cheapest architecture from
+# consideration before any arithmetic happens -- a constraint the model
+# expresses by simply not listing an offshore API as a candidate.
+#
+# Calibration note: ~1,900 clinicians, ~14 assisted notes per clinician
+# per working day. Review minutes are short because the clinician is
+# editing a draft they would otherwise have written from scratch; the
+# saving is in composition, not in verification.
+
+name: hospital-clinical-documentation
+description: >
+  Ambient clinical documentation, discharge summary drafting and coding
+  support across a regional hospital network. All inference is on
+  premises for data-residency reasons; the comparison is between model
+  sizes and serving stacks, not between hosted and self-hosted.
+
+grid: eu-average
+annual_volume: 6_600_000
+
+slo:
+  ttft_seconds: 1.0              # dictation feedback must feel immediate
+  tpot_seconds: 0.040
+  enforce: true
+
+workloads:
+  - name: encounter_note
+    share: 0.52
+    tokens_in: 2200              # transcript plus structured patient context
+    tokens_out: 700
+    # floor basis: encounter notes are clinician-reviewed before filing; set between the 8B and 32B archetypes
+    quality_floor: 0.78
+    review_rate: 1.00            # a clinician signs every note
+    review_minutes: 1.4          # editing a draft, not writing from blank
+    baseline_minutes: 6.5        # the note the clinician would have typed
+    cacheable: false
+    latency_sensitive: true
+
+  - name: discharge_summary
+    share: 0.11
+    tokens_in: 6000              # full episode history
+    tokens_out: 1200
+    # floor basis: discharge summaries leave the institution and are acted on elsewhere; set at the 70B archetype's band. DECIDES THE ANSWER: onprem-70b clears it by 1.1%
+    quality_floor: 0.86
+    self_consistency_k: 2
+    review_rate: 1.00
+    review_minutes: 4.5
+    baseline_minutes: 21.0       # summarising a whole episode by hand
+    cacheable: false
+    latency_sensitive: false
+
+  - name: coding_suggestion
+    share: 0.22
+    tokens_in: 1800
+    tokens_out: 300
+    # floor basis: coding suggestions are checked against a codebook; set just above the 8B archetype
+    quality_floor: 0.72
+    review_rate: 0.35            # coders check flagged cases only
+    review_minutes: 2.0
+    baseline_minutes: 3.4
+    cacheable: true
+    latency_sensitive: false
+
+  - name: patient_message_draft
+    share: 0.15
+    tokens_in: 1200
+    tokens_out: 350
+    # floor basis: patient-facing drafts are reviewed; set just above the 8B archetype
+    quality_floor: 0.70
+    review_rate: 1.00
+    review_minutes: 0.8
+    baseline_minutes: 3.2
+    cacheable: false
+
+architectures:
+  - name: onprem-8b-int4
+    type: self_hosted
+    model: dense-8b
+    hardware: l40s
+    serving:
+      n_accelerators: 2
+      max_batch: 192
+      demand_duty_cycle:  0.55   # clinical load is steadier than academic
+      infra_overhead: 1.45       # hospital IT carries more redundancy
+    stack: aggressive
+    platform_engineering_annual: 520_000
+
+  - name: onprem-32b
+    type: self_hosted
+    model: dense-32b
+    hardware: h100-sxm
+    serving:
+      n_accelerators: 2
+      max_batch: 192
+      demand_duty_cycle:  0.55
+      infra_overhead: 1.45
+    stack: aggressive
+    platform_engineering_annual: 620_000
+
+  - name: onprem-70b
+    type: self_hosted
+    model: dense-70b
+    hardware: h100-sxm
+    serving:
+      n_accelerators: 4
+      max_batch: 192
+      demand_duty_cycle:  0.55
+      infra_overhead: 1.45
+    stack: aggressive
+    platform_engineering_annual: 720_000
+
+layers:
+  retrieval:
+    fixed_annual: 180_000        # EHR indexing, terminology services, de-id
+    sublinear_coefficient: 30.0
+    sublinear_exponent: 0.36
+
+  integration:
+    fixed_annual: 890_000        # EHR, dictation, identity, HL7/FHIR, audit
+
+  workforce:
+    front_load_year1: 610_000    # clinician training, workflow redesign
+    decay: 0.45                  # clinical training recurs with staff turnover
+
+assurance:
+  audit_logging_annual: 210_000  # every generation is a record-keeping event
+  evaluation_annual: 340_000     # clinical safety evaluation, versioned
+  red_team_annual: 120_000
+  privacy_review_annual: 260_000
+  incident_response_annual: 190_000
+  reviewer_hourly_cost: 128.0    # loaded clinician time
+  storage_per_query: 0.0000090   # long statutory retention
+
+scaling:
+  annual_price_decline: 0.35
+  price_elasticity: 0.75         # clinical volume is bounded by encounters
+  autonomous_growth: 0.08
+  horizon_years: 5
+  fixed_annual_cost: 2_800_000
+
+uncertainty:
+  accelerator_hourly:
+    kind: lognormal
+    median: 3.20
+    sigma: 0.30                  # capital purchase, amortised: less spread
+  tokens_in_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.34                  # transcript length varies by specialty
+  utilisation:
+    kind: triangular
+    low: 0.35
+    mode: 0.55
+    high: 0.72
+  review_rate_scale:
+    kind: triangular
+    low: 0.85
+    mode: 1.0
+    high: 1.15                   # mandatory review leaves little room to move
+  volume_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.18

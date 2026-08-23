@@ -1,0 +1,5 @@
+# sdist contents beyond what package-data already covers.
+include LICENSE README.md CHANGELOG.md CITATION.cff requirements.txt
+recursive-include docs *.md
+recursive-include tests *.py
+recursive-include src/caide/examples *.yaml *.py *.md

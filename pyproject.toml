@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "caide"
+version = "17.1.0"
+description = "Cost-Aware Inference Deployment Evaluator: cost, carbon and break-even analysis for LLM services"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Muyao Liu", email = "Muyao.Liu25@student.xjtlu.edu.cn" }]
+keywords = [
+  "large language models", "deployment", "total cost of ownership",
+  "inference", "roofline", "carbon", "capacity planning", "MLOps",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+  "Topic :: System :: Systems Administration",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "numpy>=1.22",
+  "PyYAML>=6.0",
+  "matplotlib>=3.5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov>=4.0"]
+
+[project.urls]
+Homepage = "https://github.com/caide-tools/caide"
+Documentation = "https://github.com/caide-tools/caide#readme"
+Issues = "https://github.com/caide-tools/caide/issues"
+
+[project.scripts]
+caide = "caide.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# The examples ship inside the package, not only in the repository, so that
+# `pip install caide` followed by the commands in the README and the paper
+# actually works. In v1.0 they did not.
+[tool.setuptools.package-data]
+caide = ["examples/*.yaml", "examples/*.py", "examples/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"

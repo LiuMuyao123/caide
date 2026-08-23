@@ -1,0 +1,190 @@
+# quality_floor provenance (recorded in v17.0, settling the carry-forward
+# ledger's oldest overdue item). Each floor below carries the capability
+# claim it encodes. The floors are DECLARED THRESHOLDS on a DECLARED
+# index, not measurements: no procedure here distinguishes 0.856 from
+# 0.860. Where a note says DECIDES THE ANSWER, the published verdict for
+# this scenario turns on a margin smaller than the index's stated
+# resolution of 0.05, and the tooling flags it as such.
+# Engineering-education GenAI platform for a research-intensive university.
+#
+# Setting: ~24,000 engineering students, ~375 AI interactions each per
+# year (roughly one per student per teaching day), served from one
+# multi-tenant platform: tutoring, automated feedback on code and
+# reports, instructional content authoring, and administrative support.
+#
+# Calibration note. Content authoring is a small share of traffic because
+# an item is authored once and consumed by a whole cohort, whereas
+# tutoring is per-student and per-turn. Review rates are set so that the
+# implied instructor workload -- about 13,000 hours, near 7 full-time
+# equivalents -- is one a dean could actually approve. Any scenario whose
+# review hours exceed the staff who could plausibly supply them is not a
+# forecast but an arithmetic error, and CAIDE will compute it for you
+# just as willingly. Check the implied hours, not only the dollars.
+
+name: university-engineering-genai
+description: >
+  Multi-tenant GenAI platform for a large engineering school: tutoring,
+  automated feedback, content authoring and administrative support.
+  Traffic is bursty around assignment deadlines, so the latency SLO
+  binds rather than decorates.
+
+grid: us-average
+annual_volume: 9_000_000
+
+slo:
+  ttft_seconds: 1.5              # students abandon slow tutors
+  tpot_seconds: 0.045            # ~22 tokens/s, comfortable reading speed
+  enforce: true
+
+workloads:
+  - name: tutoring_turn
+    share: 0.58
+    tokens_in: 1500              # retrieved course context dominates the prompt
+    tokens_out: 400
+    # floor basis: conversational tutoring: the class an 8B open model is routinely deployed for; set at the 8B archetype's index less a small margin
+    quality_floor: 0.62
+    cacheable: true
+    latency_sensitive: true
+
+  - name: code_feedback
+    share: 0.16
+    tokens_in: 3000
+    tokens_out: 1000
+    # floor basis: feedback on student work is read as authoritative; set at the mid-tier commercial band, below the frontier
+    quality_floor: 0.80
+    self_consistency_k: 3        # disagreement across samples gates review
+    review_rate: 0.12            # only low-confidence items reach an instructor
+    review_minutes: 3.0
+    cacheable: false
+
+  - name: report_feedback
+    share: 0.07
+    tokens_in: 2500
+    tokens_out: 800
+    # floor basis: feedback on student work is read as authoritative; set at the mid-tier commercial band, below the frontier
+    quality_floor: 0.80
+    self_consistency_k: 3
+    review_rate: 0.15
+    review_minutes: 6.0
+    cacheable: false
+    latency_sensitive: false
+
+  - name: content_authoring
+    share: 0.006                 # authored once, consumed by a whole cohort
+    tokens_in: 1000
+    tokens_out: 3000
+    # floor basis: published course material carries the institution's name; set above the mid-tier band. DECIDES THE ANSWER: 1.2% above api-midrange
+    quality_floor: 0.85
+    review_rate: 1.00            # every generated item is instructor-approved
+    review_minutes: 5.0
+    cacheable: false
+    latency_sensitive: false
+
+  - name: admin_support
+    share: 0.184
+    tokens_in: 900
+    tokens_out: 250
+    # floor basis: routine administrative replies; set well below every candidate so the floor never binds
+    quality_floor: 0.45          # bounded task; a small model is adequate
+    cacheable: true
+
+architectures:
+  - name: api-frontier
+    type: api
+    pricing: api-frontier
+    platform_engineering_annual: 180_000
+
+  - name: api-midrange
+    type: api
+    pricing: api-midrange
+    platform_engineering_annual: 180_000
+
+  - name: selfhost-70b
+    type: self_hosted
+    model: dense-70b
+    hardware: h100-sxm
+    serving:
+      n_accelerators: 4
+      max_batch: 256
+      demand_duty_cycle:  0.42   # deadline-driven bursts leave deep troughs
+      infra_overhead: 1.35
+    stack: aggressive
+    platform_engineering_annual: 420_000   # ~2 FTE platform engineers
+
+  - name: selfhost-8b
+    type: self_hosted
+    model: dense-8b
+    hardware: l40s
+    serving:
+      n_accelerators: 1
+      max_batch: 256
+      demand_duty_cycle:  0.42
+    stack: aggressive
+    platform_engineering_annual: 280_000
+
+layers:
+  retrieval:
+    fixed_annual: 46_000         # vector store, embedding refresh, curation
+    sublinear_coefficient: 14.0  # index cost amortises across queries
+    sublinear_exponent: 0.34
+
+  integration:
+    fixed_annual: 265_000        # LMS, SIS, autograder, identity, observability
+
+  workforce:
+    front_load_year1: 340_000    # faculty training, assessment redesign
+    decay: 0.32
+
+assurance:
+  audit_logging_annual: 42_000
+  evaluation_annual: 95_000      # course-specific eval suites, versioned
+  red_team_annual: 35_000
+  privacy_review_annual: 48_000
+  incident_response_annual: 30_000
+  reviewer_hourly_cost: 52.0     # loaded instructional staff cost
+  storage_per_query: 0.0000022
+
+scaling:
+  annual_price_decline: 0.38
+  price_elasticity: 1.35         # large backlog of unmet formative feedback
+  autonomous_growth: 0.12
+  horizon_years: 5
+  fixed_annual_cost: 660_000
+
+uncertainty:
+  accelerator_hourly:
+    kind: lognormal
+    median: 3.20
+    sigma: 0.38                  # cloud GPU quotations vary by roughly 2x
+  tokens_in_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.30                  # retrieved context length is poorly known
+  tokens_out_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.22
+  utilisation:
+    kind: triangular
+    low: 0.22
+    mode: 0.42
+    high: 0.65                   # duty cycle is the least-measured input
+  review_rate_scale:
+    kind: triangular
+    low: 0.5
+    mode: 1.0
+    high: 2.2                    # a policy change can double human review
+  review_minutes_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.30                  # how long a review actually takes is
+                                 # rarely measured; declared, not observed
+  reviewer_wage_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.18                  # instructor pay bands and on-costs vary
+                                 # across departments and contract types
+  volume_scale:
+    kind: lognormal
+    median: 1.0
+    sigma: 0.28

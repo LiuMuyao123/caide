@@ -1,0 +1,332 @@
+{
+  "regime_dependence": {
+    "speculative_decoding": {
+      "min": 0.40275624681944655,
+      "max": 1.0899924927561677,
+      "spread": 2.7063329280769803,
+      "published": 0.4,
+      "max_relative_error": 0.6330249954395967
+    },
+    "int4": {
+      "min": 0.2693291373185747,
+      "max": 0.535094971094337,
+      "spread": 1.986769706470349,
+      "published": 0.65,
+      "max_relative_error": 1.4134039356876213
+    },
+    "semantic_caching": {
+      "min": 0.6999999999999998,
+      "max": 0.7000000000000001,
+      "spread": 1.0000000000000002,
+      "published": 0.5,
+      "max_relative_error": 0.2857142857142858
+    },
+    "speculative_decoding_moe": {
+      "min": 0.4148869300308903,
+      "max": 1.032027683855899,
+      "at_batch_1": 1.032027683855899,
+      "best_batch": 16.0,
+      "spread": 2.487491432374261
+    }
+  },
+  "interaction": {
+    "memory-bound (70B, 2xH100, 8k context)": {
+      "int4": 0.20727481750837706,
+      "paged": 0.7071448607603956,
+      "product": 0.1465733219660977,
+      "measured": 0.20561665960342349,
+      "relative_error": -0.2871524989813749
+    },
+    "headroom-rich (8B, 1xL40S, 1.5k context)": {
+      "int4": 0.625653066017707,
+      "paged": 0.9818449940912818,
+      "product": 0.6142943309073479,
+      "measured": 0.622546008079134,
+      "relative_error": -0.013254726662285816
+    }
+  },
+  "duty_cycle": {
+    "idealised": 0.00016298284760012617,
+    "realistic": 0.0005141365571593225,
+    "ratio": 3.1545439580288965,
+    "duty_only": 2.3458147942281644,
+    "scheduler_only": 1.0,
+    "overhead_only": 1.339666248796308
+  },
+  "break_even": {
+    "n_crossings": 5,
+    "first_crossing": 639859511.7870017,
+    "band": [
+      1827615559.811597,
+      2005744674.169162
+    ],
+    "n_tie_windows": 4,
+    "tie_windows": [
+      [
+        614060143.5244638,
+        668235924.4037513
+      ],
+      [
+        1228304295.3262846,
+        1336672091.3124335
+      ],
+      [
+        1827615559.811597,
+        2005744674.169162
+      ],
+      [
+        2606779327.382001,
+        2673744727.6390767
+      ]
+    ]
+  },
+  "cross_domain": {
+    "university_tutoring": {
+      "volume": 9000000.0,
+      "cheapest": "api-frontier",
+      "total": 2467558.1900861086,
+      "inference_share": 0.15749099719769472,
+      "review_fte": 13.288235294117648,
+      "displaced": 0.0,
+      "architecture_spread": 0.07479687541205715,
+      "n_feasible": 2.0,
+      "n_architectures": 4.0,
+      "n_fully_evaluated": 2.0,
+      "winner_fully_evaluated": 0.0
+    },
+    "hospital_documentation": {
+      "volume": 6600000.0,
+      "cheapest": "onprem-70b",
+      "total": 24772637.462566495,
+      "inference_share": 0.035775936401332586,
+      "review_fte": 96.86470588235294,
+      "displaced": 97405440.00000001,
+      "architecture_spread": 0.0,
+      "n_feasible": 1.0,
+      "n_architectures": 3.0,
+      "n_fully_evaluated": 3.0,
+      "winner_fully_evaluated": 1.0
+    },
+    "public_helpline": {
+      "volume": 420000000.0,
+      "cheapest": "api-economy",
+      "total": 24141943.069252174,
+      "inference_share": 0.023533816576827807,
+      "review_fte": 187.64117647058825,
+      "displaced": 203252000.00000003,
+      "architecture_spread": 0.027910150299018888,
+      "n_feasible": 0.0,
+      "n_architectures": 4.0,
+      "n_fully_evaluated": 3.0,
+      "winner_fully_evaluated": 0.0
+    }
+  },
+  "uncertainty": {
+    "probability_api_cheaper": 1.0,
+    "top_driver": "review_minutes_scale",
+    "top_contribution": 0.33300625485419894,
+    "accelerator_selfhosted": 0.0041150977200172,
+    "feasible_fraction": 1.0,
+    "explained_rank_variance": 0.9695936661185172,
+    "accelerator_api": 0.0004964634455773299,
+    "p05": 2038174.2336566972,
+    "p50": 2846245.8525439403,
+    "p95": 4668742.975868435
+  },
+  "jevons": {
+    "declining_share": 0.15749099719769472,
+    "0.6": {
+      "regime": "inelastic",
+      "volume_ratio": 1.9746664970967245,
+      "spend_ratio": 1.3524596362062478,
+      "effective_price_ratio": 0.6849053438617189
+    },
+    "1.0": {
+      "regime": "neutral",
+      "volume_ratio": 2.4173800779118135,
+      "spend_ratio": 1.5735193599686232,
+      "effective_price_ratio": 0.6509193048897235
+    },
+    "1.35": {
+      "regime": "jevons",
+      "volume_ratio": 2.9870881514972134,
+      "spend_ratio": 1.8579911151384416,
+      "effective_price_ratio": 0.6220074604116266
+    },
+    "1.8": {
+      "regime": "jevons",
+      "volume_ratio": 4.0775572662699044,
+      "spend_ratio": 2.4024939533826064,
+      "effective_price_ratio": 0.5891993162809399
+    }
+  },
+  "validation": {
+    "observations": [
+      {
+        "source": "vLLM, LLaMA-2-70B TP=4, high concurrency (arXiv 2511.17593); states aggregate token throughput",
+        "predicted": 3178.2140745196925,
+        "measured": 3245,
+        "ratio": 0.9794188211154676,
+        "implied_mbu": 0.32813287275124375,
+        "conventions": [
+          "aggregate"
+        ]
+      },
+      {
+        "source": "TensorRT-LLM, Llama 3.1 405B TP=8 FP8 (arXiv 2509.20241); table header states Tokens per Second, high concurrency",
+        "predicted": 2077.822294351476,
+        "measured": 3089,
+        "ratio": 0.6726520862257935,
+        "implied_mbu": 0.8986562004505969,
+        "conventions": [
+          "aggregate"
+        ]
+      },
+      {
+        "source": "TensorRT-LLM, Llama 3.1 405B TP=8 FP8 (arXiv 2509.20241); same table",
+        "predicted": 3348.8714107871792,
+        "measured": 3732,
+        "ratio": 0.8973396063202517,
+        "implied_mbu": 0.3123331216508669,
+        "conventions": [
+          "aggregate"
+        ]
+      },
+      {
+        "source": "SGLang, Llama 3.1 70B FP8 on 1xH100 (cerebrium.ai); reported as throughput at batch size 64, read as aggregate",
+        "predicted": 1120.1978298964887,
+        "measured": 460,
+        "ratio": 2.4352126736880186,
+        "implied_mbu": 0.2618484822897363,
+        "conventions": [
+          "aggregate"
+        ]
+      },
+      {
+        "source": "vLLM, Llama 3 8B on 1xA100, 8 concurrent requests. The source does not state its convention; the per-request reading is excluded by admissible_conventions() because it implies a memory-bandwidth utilisation of 1.60, so the aggregate reading is the only physically possible one",
+        "predicted": 600.6678541779245,
+        "measured": 187,
+        "ratio": 3.212127562448794,
+        "implied_mbu": 0.18747691511525258,
+        "conventions": [
+          "aggregate"
+        ]
+      }
+    ],
+    "n_observations": 5.0,
+    "n_within_2x": 3.0,
+    "n_over_predicting": 2.0,
+    "within_2x_before": 0.6,
+    "within_2x_after": 0.6,
+    "mbu_scale": 0.5908353878125555,
+    "log_rmse_before": 0.681658871131169,
+    "log_rmse_after": 0.5410742494355563,
+    "n_excluded": 2.0,
+    "n_readmitted": 1.0,
+    "overhead_per_step_seconds": 0.01345,
+    "overhead_per_sequence_seconds": 0.00226,
+    "overhead_degrees_of_freedom": 0.0
+  },
+  "structural_sensitivity": {
+    "variants": {
+      "baseline": {
+        "dense_at_1": 0.40275624681944655,
+        "dense_at_256": 1.0899924927561677,
+        "dense_spread": 2.7063329280769803,
+        "moe_at_1": 1.032027683855899,
+        "moe_best": 0.4148869300308903,
+        "int4_worst_error": 1.4134039356876213
+      },
+      "decode_mfu_half_batch=16": {
+        "dense_at_1": 0.40275624681944655,
+        "dense_at_256": 1.0766575845409512,
+        "dense_spread": 2.6732237998622796,
+        "moe_at_1": 1.032027683855899,
+        "moe_best": 0.4148869300308903,
+        "int4_worst_error": 1.4134039356876213
+      },
+      "decode_mfu_half_batch=256": {
+        "dense_at_1": 0.5286027247342946,
+        "dense_at_256": 1.0357252796978047,
+        "dense_spread": 2.332409894990205,
+        "moe_at_1": 1.032027683855899,
+        "moe_best": 0.4148869300308903,
+        "int4_worst_error": 1.4134039356876213
+      },
+      "mfu_prefill=0.30": {
+        "dense_at_1": 0.40861619456602,
+        "dense_at_256": 1.127472409449227,
+        "dense_spread": 2.7592455327099414,
+        "moe_at_1": 1.0317060377449923,
+        "moe_best": 0.43738009048510457,
+        "int4_worst_error": 1.3972288153111703
+      },
+      "mfu_prefill=0.60": {
+        "dense_at_1": 0.39978250699662704,
+        "dense_at_256": 1.0048853205086938,
+        "dense_spread": 2.5135800164392186,
+        "moe_at_1": 1.0321909666240623,
+        "moe_best": 0.40295214694691944,
+        "int4_worst_error": 1.4216960808505275
+      },
+      "mbu_decode=0.50": {
+        "dense_at_1": 0.39897017163742066,
+        "dense_at_256": 0.9861991691287193,
+        "dense_spread": 2.4718619065712146,
+        "moe_at_1": 1.0321911017282746,
+        "moe_best": 0.4006324660872877,
+        "int4_worst_error": 1.4262650051351582
+      },
+      "mbu_decode=0.90": {
+        "dense_at_1": 0.4064958976890343,
+        "dense_at_256": 1.1280453707629534,
+        "dense_spread": 2.7750473674543645,
+        "moe_at_1": 1.0318662107478038,
+        "moe_best": 0.42848436698767034,
+        "int4_worst_error": 1.4008337192330593
+      },
+      "interconnect_ideal": {
+        "dense_at_1": 0.40244839172338825,
+        "dense_at_256": 1.0890730234431043,
+        "dense_spread": 2.7061184634864897,
+        "moe_at_1": 1.032008924221606,
+        "moe_best": 0.41444154071635403,
+        "int4_worst_error": 1.4160867086743003
+      },
+      "interconnect_poor": {
+        "dense_at_1": 0.4032687792454679,
+        "dense_at_256": 1.0914691776467278,
+        "dense_spread": 2.7065551161409287,
+        "moe_at_1": 1.0320589371909574,
+        "moe_best": 0.41562805609883463,
+        "int4_worst_error": 1.408950713924273
+      }
+    },
+    "n_variants": 9.0,
+    "dense_spread_min": 2.332409894990205,
+    "dense_spread_max": 2.7750473674543645,
+    "dense_at_256_min": 0.9861991691287193,
+    "dense_at_256_max": 1.1280453707629534,
+    "n_past_parity": 8.0,
+    "moe_at_1_min": 1.0317060377449923,
+    "moe_at_1_max": 1.0321911017282746,
+    "int4_error_min": 1.3972288153111703,
+    "int4_error_max": 1.4262650051351582
+  },
+  "provenance_and_routing": {
+    "digest": "19f51c647670",
+    "n_feasible": 0.0,
+    "n_architectures": 4.0,
+    "tiers_opened": [
+      "selfhost-70b-only",
+      "selfhost-8b-only"
+    ],
+    "n_tiers_opened": 2.0,
+    "unroutable": [
+      "appeal_drafting"
+    ],
+    "blended_quality": 0.6906150874351873,
+    "routed_annual_cost": 25688.669933317782,
+    "plan_is_exact": 1.0
+  }
+}

@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use CAIDE, please cite the software paper below."
+title: "CAIDE: Cost-Aware Inference Deployment Evaluator"
+abstract: >-
+  A Python toolkit for cost, energy and carbon planning of large language
+  model services. CAIDE derives efficiency multipliers from a roofline
+  model of the transformed deployment state rather than assuming published
+  constants, decomposes total cost of ownership into six layers with
+  distinct scaling laws, locates every break-even volume between candidate
+  architectures, and propagates input uncertainty to a sensitivity ranking.
+type: software
+version: 17.1.0
+date-released: "2026-08-20"
+license: MIT
+repository-code: "https://github.com/caide-tools/caide"
+url: "https://github.com/caide-tools/caide"
+keywords:
+  - large language models
+  - deployment planning
+  - total cost of ownership
+  - roofline model
+  - inference serving
+  - carbon accounting
+  - capacity planning
+authors:
+  - family-names: "Liu"
+    given-names: "Muyao"
+    affiliation: "Academy of Future Education (AOFE), Xi'an Jiaotong-Liverpool University"
+    email: "Muyao.Liu25@student.xjtlu.edu.cn"
+preferred-citation:
+  type: article
+  title: >-
+    CAIDE: A Python toolkit for cost- and carbon-aware deployment planning
+    of large language model services
+  journal: SoftwareX
+  year: 2026
+  authors:
+    - family-names: "Liu"
+      given-names: "Muyao"
+      affiliation: "Academy of Future Education (AOFE), Xi'an Jiaotong-Liverpool University"
+      email: "Muyao.Liu25@student.xjtlu.edu.cn"
