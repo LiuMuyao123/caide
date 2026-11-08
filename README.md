@@ -3,7 +3,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-487%20passing-brightgreen.svg)](tests/)
-[![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen.svg)](tests/)
+[![Coverage](https://img.shields.io/badge/coverage-90.2%25-brightgreen.svg)](tests/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22066252.svg)](https://doi.org/10.5281/zenodo.22066252)
 
 > **🔗 Live demo — [open the interactive explorer](https://liumuyao123.github.io/caide/)**
@@ -348,6 +348,16 @@ pip install caide                     # from PyPI
 pip install -e ".[dev]" && pytest     # from source, with tests
 ```
 
+To install the exact software version used in the revised manuscript:
+
+```bash
+python -m pip install "git+https://github.com/LiuMuyao123/caide@v17.1.0"
+```
+
+The test suite rerun on the [archived CAIDE v17.1.0 source](https://doi.org/10.5281/zenodo.22066252)
+yielded 487 passing tests and 90.2% statement coverage (2,835 of 3,143
+statements) on Linux x86_64 with Python 3.12.14.
+
 Requires Python 3.9+, NumPy, PyYAML and Matplotlib. No GPU required —
 CAIDE models accelerators, it does not use them.
 
@@ -355,14 +365,19 @@ CAIDE models accelerators, it does not use them.
 
 ## Limitations
 
-- **A model, not a measurement.** Tested against four published
-  measurements from three serving frameworks, the uncalibrated roofline
-  lands within a factor of two in two of four cases and over-predicts in
-  three — call it a factor of two to three, biased optimistic. That is
-  adequate for *ranking* architectures, since the bias is largely common
-  to all of them, and inadequate for absolute capacity commitments.
-  `caide.calibration.fit()` corrects it against measurements from your own
-  stack; see `docs/model.md` §8 for the evidence.
+- **External throughput comparison.** The revised manuscript compares
+  CAIDE v17.1.0 predictions with four reported observations. Before
+  fitting, two predictions were within a factor of two, with three
+  underpredictions and one overprediction. After fitting, three
+  predictions were within a factor of two on the same four observations.
+  See [model documentation §8](docs/model.md#8-how-accurate-is-it-actually)
+  for sources, assumptions, and the scope of the comparison.
+  A separate [offline holdout](docs/model.md#independent-offline-throughput-comparison)
+  evaluates 32 NVIDIA TensorRT-LLM configurations using the multiplier
+  fitted on the four original observations. On the holdout, 29/32
+  predictions were within a factor of two before applying the multiplier
+  and 30/32 after applying it. The holdout files record the published
+  measurements and CAIDE's predictions separately.
 - **The roofline models the accelerator, not the serving stack.** Published
   throughput is wall-clock and includes the scheduler and HTTP layer —
   vLLM measured only 38% of its own wall time as GPU execution on an 8B
@@ -394,6 +409,10 @@ If you use CAIDE, please cite the archived release:
 > Liu, M. (2026). *CAIDE: Cost-Aware Inference Deployment Evaluator* (v17.1.0). Zenodo. https://doi.org/10.5281/zenodo.22066252
 
 DOI: [10.5281/zenodo.22066252](https://doi.org/10.5281/zenodo.22066252). Machine-readable metadata is in `CITATION.cff`.
+
+This DOI identifies the software release. The
+[revised manuscript's benchmark comparison](docs/model.md#8-how-accurate-is-it-actually)
+uses that release with source-checked benchmark inputs.
 
 ## License
 
